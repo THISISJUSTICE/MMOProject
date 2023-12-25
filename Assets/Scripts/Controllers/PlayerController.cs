@@ -9,11 +9,57 @@ public class PlayerController : MonoBehaviour
     public Grid grid_;
 
     Vector3Int cellPos_ = Vector3Int.zero;
-    MoveDir dir_ = MoveDir.None;
-
     bool isMoving_ = false;
+    Animator animator_;
+
+    MoveDir dir_ = MoveDir.Right;
+    public MoveDir Dir{
+        get{ return dir_; }
+        set{
+            if(dir_ == value) return;
+            switch(value){
+                case MoveDir.Up:
+                    animator_.Play("Walk_Back");
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    break;
+                case MoveDir.Down:
+                    animator_.Play("Walk_Front");
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    break;
+                case MoveDir.Left:
+                    animator_.Play("Walk_Right");
+                    transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+                    break;
+                case MoveDir.Right:
+                    animator_.Play("Walk_Right");
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    break;
+
+                case MoveDir.None:
+                if(dir_ == MoveDir.Up){
+                    animator_.Play("Idle_Back");
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
+                else if(dir_ == MoveDir.Down){
+                    animator_.Play("Idle_Front");
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
+                else if(dir_ == MoveDir.Left){
+                    animator_.Play("Idle_Right");
+                    transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+                }
+                else{
+                    animator_.Play("Idle_Right");
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
+                    break;
+            }
+            dir_ = value;
+        }
+    }
 
     private void Start() {
+        animator_ = GetComponent<Animator>();
         Vector3 pos = grid_.CellToWorld(cellPos_) + new Vector3(0.5f, 0.5f, 0);
         transform.position = pos;
     }
@@ -28,19 +74,19 @@ public class PlayerController : MonoBehaviour
     //입력을 받아 방향 설정
     void GetDirectionInput(){
         if(Input.GetKey(KeyCode.W)){
-            dir_ = MoveDir.Up;
+            Dir = MoveDir.Up;
         }
         else if(Input.GetKey(KeyCode.S)){
-            dir_ = MoveDir.Down;
+            Dir = MoveDir.Down;
         }
         else if(Input.GetKey(KeyCode.A)){
-            dir_ = MoveDir.Left;
+            Dir = MoveDir.Left;
         }
         else if(Input.GetKey(KeyCode.D)){
-            dir_ = MoveDir.Right;
+            Dir = MoveDir.Right;
         }
         else{
-            dir_ = MoveDir.None;
+            Dir = MoveDir.None;
         }
     }
 
@@ -65,7 +111,7 @@ public class PlayerController : MonoBehaviour
     //현재 방향을 확인하여 목표 위치 연산
     void UpdateIsMoving(){
         if(!isMoving_){
-            switch(dir_){
+            switch(Dir){
                 case MoveDir.Up:
                 cellPos_ += Vector3Int.up;
                 isMoving_ = true;
@@ -83,6 +129,7 @@ public class PlayerController : MonoBehaviour
                 isMoving_ = true;
                 break;
             }
+            
         }
     }
 

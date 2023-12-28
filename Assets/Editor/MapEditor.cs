@@ -19,17 +19,17 @@ public class MapEditor
         GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Maps");
         
         foreach (GameObject go in gameObjects){
-            //Tilemap tm = Util.FindChild<Tilemap>(go, "Tilemap_Collision", true);
-            Tilemap tm = go.transform.Find("Tilemap_Collision").GetComponent<Tilemap>();
+            Tilemap tmBase = Util.FindChild<Tilemap>(go, "Tilemap_Base", true);
+            Tilemap tm = Util.FindChild<Tilemap>(go, "Tilemap_Collision", true);
 
             using (var writer = File.CreateText($"Assets/Resources/Map/{go.name}.txt")){
-                writer.WriteLine(tm.cellBounds.xMin);
-                writer.WriteLine(tm.cellBounds.xMax);
-                writer.WriteLine(tm.cellBounds.yMin);
-                writer.WriteLine(tm.cellBounds.yMax);
+                writer.WriteLine(tmBase.cellBounds.xMin);
+                writer.WriteLine(tmBase.cellBounds.xMax);
+                writer.WriteLine(tmBase.cellBounds.yMin);
+                writer.WriteLine(tmBase.cellBounds.yMax);
                 
-                for(int y=tm.cellBounds.yMax; y >= tm.cellBounds.yMin; y--){
-                    for(int x = tm.cellBounds.xMin; x<= tm.cellBounds.xMax; x++){
+                for(int y=tmBase.cellBounds.yMax; y >= tmBase.cellBounds.yMin; y--){
+                    for(int x = tmBase.cellBounds.xMin; x<= tmBase.cellBounds.xMax; x++){
                         TileBase tile = tm.GetTile(new Vector3Int(x,y,0));
                         if(tile != null){
                             writer.Write("1");

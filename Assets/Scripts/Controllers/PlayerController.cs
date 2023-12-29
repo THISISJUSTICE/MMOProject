@@ -6,6 +6,7 @@ using static Define;
 public class PlayerController : CreatureController
 {
     Coroutine coSkill_;
+    bool rangeSkill_ = false;
 
     private void Start() {
         Init();
@@ -14,6 +15,74 @@ public class PlayerController : CreatureController
     protected override void Init()
     {
         base.Init();
+    }
+
+    protected override void UpdateAnimation(){
+        if(State == CreatureState.Idle){
+            switch(lastDir_){
+                case MoveDir.Up:
+                    animator_.Play("Idle_Back");
+                    sprite_.flipX = false;
+                    break;
+                case MoveDir.Down:
+                    animator_.Play("Idle_Front");
+                    sprite_.flipX = false;
+                    break;
+                case MoveDir.Left:
+                    animator_.Play("Idle_Right");
+                    sprite_.flipX = true;
+                    break;
+                case MoveDir.Right:
+                    animator_.Play("Idle_Right");
+                    sprite_.flipX = false;
+                    break;
+            }
+        }
+        else if(State == CreatureState.Moving){
+            switch(Dir){
+                case MoveDir.Up:
+                    animator_.Play("Walk_Back");
+                    sprite_.flipX = false;
+                    break;
+                case MoveDir.Down:
+                    animator_.Play("Walk_Front");
+                    sprite_.flipX = false;
+                    break;
+                case MoveDir.Left:
+                    animator_.Play("Walk_Right");
+                    sprite_.flipX = true;
+                    break;
+                case MoveDir.Right:
+                    animator_.Play("Walk_Right");
+                    sprite_.flipX = false;
+                    break;
+
+            }
+        }
+        else if (State == CreatureState.Skill){
+            switch(lastDir_){
+                case MoveDir.Up:
+                    animator_.Play(rangeSkill_ ? "Attack_Weapon_Back" : "Attack_Back");
+                    sprite_.flipX = false;
+                    break;
+                case MoveDir.Down:
+                    animator_.Play(rangeSkill_ ? "Attack_Weapon_Front" : "Attack_Front");
+                    sprite_.flipX = false;
+                    break;
+                case MoveDir.Left:
+                    animator_.Play(rangeSkill_ ? "Attack_Weapon_Right" : "Attack_Right");
+                    sprite_.flipX = true;
+                    break;
+                case MoveDir.Right:
+                    animator_.Play(rangeSkill_ ? "Attack_Weapon_Right" : "Attack_Right");
+                    sprite_.flipX = false;
+                    break;
+
+            }
+        }
+        else{
+
+        }
     }
 
     void Update()
@@ -49,7 +118,8 @@ public class PlayerController : CreatureController
     void GetIdleInput(){
         if(Input.GetKey(KeyCode.Space)){
             State = CreatureState.Skill;
-            coSkill_ = StartCoroutine(CoStartPunch());
+            //coSkill_ = StartCoroutine(CoStartPunch());
+            coSkill_ = StartCoroutine(CoStartShootArrow());
         }
     }
 
@@ -61,7 +131,22 @@ public class PlayerController : CreatureController
         }
 
         //대기 시간
+        rangeSkill_ = false;
         yield return new WaitForSeconds(0.5f);
+        State = CreatureState.Idle;
+        coSkill_ = null;
+    }
+
+    IEnumerator CoStartShootArrow(){
+        GameObject go = Managers.Resource.Instantiate("Creatures/Arrow");
+        ArrowController ac = go.GetComponent<ArrowController>();
+
+        ac.Dir = lastDir_;
+        ac.CellPos = CellPos;
+
+        //대기 시간
+        rangeSkill_ = true;
+        yield return new WaitForSeconds(0.3f);
         State = CreatureState.Idle;
         coSkill_ = null;
     }

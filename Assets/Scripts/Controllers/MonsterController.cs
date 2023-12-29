@@ -12,6 +12,9 @@ public class MonsterController : CreatureController
     protected override void Init()
     {
         base.Init();
+        
+        State = CreatureState.Idle;
+        Dir = MoveDir.None;
     }
 
     void Update()
@@ -43,5 +46,5 @@ public class MonsterController : CreatureController
             Dir = MoveDir.None;
         }
     }
-    
+
 }

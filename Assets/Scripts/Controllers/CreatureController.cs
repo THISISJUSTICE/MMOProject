@@ -8,7 +8,7 @@ public class CreatureController : MonoBehaviour
 {
     public float speed_ = 5.0f;
 
-    protected Vector3Int cellPos_ = Vector3Int.zero;
+    public Vector3Int CellPos {get; set;} = Vector3Int.zero;
     protected Animator animator_;
     protected SpriteRenderer sprite_;
 
@@ -90,7 +90,7 @@ public class CreatureController : MonoBehaviour
     protected virtual void Init(){
         animator_ = GetComponent<Animator>();
         sprite_ = GetComponent<SpriteRenderer>();
-        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(cellPos_) + new Vector3(0.5f, 0.5f, 0);
+        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f, 0);
         transform.position = pos;
     }
 
@@ -102,7 +102,7 @@ public class CreatureController : MonoBehaviour
     //방향을 받아 이동
     void UpdatePosition(){
         if(State != CreatureState.Moving) return;
-        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(cellPos_) + new Vector3(0.5f, 0.5f, 0);
+        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f, 0);
         Vector3 moveDir = destPos - transform.position;
         
         //도착 여부 확인
@@ -124,7 +124,7 @@ public class CreatureController : MonoBehaviour
     //현재 방향을 확인하여 목표 위치 연산
     void UpdateIsMoving(){
         if(State == CreatureState.Idle  && Dir != MoveDir.None){
-            Vector3Int destPos = cellPos_;
+            Vector3Int destPos = CellPos;
             switch(Dir){
                 case MoveDir.Up:
                 destPos += Vector3Int.up;
@@ -140,9 +140,13 @@ public class CreatureController : MonoBehaviour
                 break;
             }
             
+            State = CreatureState.Moving;
+            
             if(Managers.Map.CanGo(destPos)){
-                cellPos_ = destPos;
-                State = CreatureState.Moving;
+                if(Managers.Obj.Find(destPos) == null){
+                    CellPos = destPos;
+                    
+                }
             }
         }
     }

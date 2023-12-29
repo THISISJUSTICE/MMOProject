@@ -127,7 +127,9 @@ public class PlayerController : CreatureController
         //피격 판정
         GameObject go = Managers.Obj.Find(GetFrontPos());
         if(go != null){
-            Debug.Log($"{go.name} 피격");
+            CreatureController cc = go.GetComponent<CreatureController>();
+            if(cc != null)
+                cc.OnDamaged();
         }
 
         //대기 시간

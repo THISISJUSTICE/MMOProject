@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 using static Define;
 
@@ -66,7 +67,10 @@ public class ArrowController : CreatureController
                     
                 }
                 else{
-                    Debug.Log($"{go.name} 피격");
+                    CreatureController cc = go.GetComponent<CreatureController>();
+                    if(cc != null)
+                        cc.OnDamaged();
+
                     Managers.Resource.Destroy(gameObject);    
                 }
             }

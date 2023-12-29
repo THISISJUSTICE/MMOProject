@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class PlayerController : CreatureController
+public class MonsterController : CreatureController
 {
     private void Start() {
         Init();
@@ -21,12 +21,8 @@ public class PlayerController : CreatureController
 
     protected override void UpdateController()
     {
-        GetDirectionInput();
+        //GetDirectionInput();
         base.UpdateController();
-    }
-
-    private void LateUpdate() {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
     }
 
     //입력을 받아 방향 설정
@@ -47,5 +43,5 @@ public class PlayerController : CreatureController
             Dir = MoveDir.None;
         }
     }
-
+    
 }

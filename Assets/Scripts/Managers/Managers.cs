@@ -8,11 +8,11 @@ public class Managers : MonoBehaviour
     static Managers Instance { get { Init(); return s_instance; } } // 유일한 매니저를 갖고온다
 
 	#region Contents
-    MapManager map_ = new MapManager();
-    ObjectManager obj_ = new ObjectManager();
+    MapManager _map = new MapManager();
+    ObjectManager _obj = new ObjectManager();
 
-    public static MapManager Map {get {return Instance.map_;}}
-    public static ObjectManager Obj {get {return Instance.obj_;}}
+    public static MapManager Map {get {return Instance._map;}}
+    public static ObjectManager Obj {get {return Instance._obj;}}
 	#endregion
 
 	#region Core

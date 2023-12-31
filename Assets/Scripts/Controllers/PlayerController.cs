@@ -5,8 +5,8 @@ using static Define;
 
 public class PlayerController : CreatureController
 {
-    Coroutine coSkill_;
-    bool rangeSkill_ = false;
+    Coroutine _coSkill;
+    bool _rangeSkill = false;
 
     private void Start() {
         Init();
@@ -21,40 +21,40 @@ public class PlayerController : CreatureController
         if(State == CreatureState.Idle){
             switch(lastDir_){
                 case MoveDir.Up:
-                    animator_.Play("Idle_Back");
-                    sprite_.flipX = false;
+                    _animator.Play("Idle_Back");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Down:
-                    animator_.Play("Idle_Front");
-                    sprite_.flipX = false;
+                    _animator.Play("Idle_Front");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Left:
-                    animator_.Play("Idle_Right");
-                    sprite_.flipX = true;
+                    _animator.Play("Idle_Right");
+                    _sprite.flipX = true;
                     break;
                 case MoveDir.Right:
-                    animator_.Play("Idle_Right");
-                    sprite_.flipX = false;
+                    _animator.Play("Idle_Right");
+                    _sprite.flipX = false;
                     break;
             }
         }
         else if(State == CreatureState.Moving){
             switch(Dir){
                 case MoveDir.Up:
-                    animator_.Play("Walk_Back");
-                    sprite_.flipX = false;
+                    _animator.Play("Walk_Back");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Down:
-                    animator_.Play("Walk_Front");
-                    sprite_.flipX = false;
+                    _animator.Play("Walk_Front");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Left:
-                    animator_.Play("Walk_Right");
-                    sprite_.flipX = true;
+                    _animator.Play("Walk_Right");
+                    _sprite.flipX = true;
                     break;
                 case MoveDir.Right:
-                    animator_.Play("Walk_Right");
-                    sprite_.flipX = false;
+                    _animator.Play("Walk_Right");
+                    _sprite.flipX = false;
                     break;
 
             }
@@ -62,20 +62,20 @@ public class PlayerController : CreatureController
         else if (State == CreatureState.Skill){
             switch(lastDir_){
                 case MoveDir.Up:
-                    animator_.Play(rangeSkill_ ? "Attack_Weapon_Back" : "Attack_Back");
-                    sprite_.flipX = false;
+                    _animator.Play(_rangeSkill ? "Attack_Weapon_Back" : "Attack_Back");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Down:
-                    animator_.Play(rangeSkill_ ? "Attack_Weapon_Front" : "Attack_Front");
-                    sprite_.flipX = false;
+                    _animator.Play(_rangeSkill ? "Attack_Weapon_Front" : "Attack_Front");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Left:
-                    animator_.Play(rangeSkill_ ? "Attack_Weapon_Right" : "Attack_Right");
-                    sprite_.flipX = true;
+                    _animator.Play(_rangeSkill ? "Attack_Weapon_Right" : "Attack_Right");
+                    _sprite.flipX = true;
                     break;
                 case MoveDir.Right:
-                    animator_.Play(rangeSkill_ ? "Attack_Weapon_Right" : "Attack_Right");
-                    sprite_.flipX = false;
+                    _animator.Play(_rangeSkill ? "Attack_Weapon_Right" : "Attack_Right");
+                    _sprite.flipX = false;
                     break;
 
             }
@@ -125,7 +125,7 @@ public class PlayerController : CreatureController
         if(Input.GetKey(KeyCode.Space)){
             State = CreatureState.Skill;
             //coSkill_ = StartCoroutine(CoStartPunch());
-            coSkill_ = StartCoroutine(CoStartShootArrow());
+            _coSkill = StartCoroutine(CoStartShootArrow());
         }
     }
 
@@ -139,10 +139,10 @@ public class PlayerController : CreatureController
         }
 
         //대기 시간
-        rangeSkill_ = false;
+        _rangeSkill = false;
         yield return new WaitForSeconds(0.5f);
         State = CreatureState.Idle;
-        coSkill_ = null;
+        _coSkill = null;
     }
 
     IEnumerator CoStartShootArrow(){
@@ -153,10 +153,10 @@ public class PlayerController : CreatureController
         ac.CellPos = CellPos;
 
         //대기 시간
-        rangeSkill_ = true;
+        _rangeSkill = true;
         yield return new WaitForSeconds(0.3f);
         State = CreatureState.Idle;
-        coSkill_ = null;
+        _coSkill = null;
     }
 
     //입력을 받아 방향 설정

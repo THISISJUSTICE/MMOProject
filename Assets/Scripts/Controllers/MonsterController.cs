@@ -5,18 +5,28 @@ using static Define;
 
 public class MonsterController : CreatureController
 {
-    Coroutine coPatrol_;
-    Vector3Int destCellPos_;
+    Coroutine _coPatrol;
+    Coroutine _coSearch;
+    
+    [SerializeField] Vector3Int _destCellPos;
+    [SerializeField] GameObject _target;
+
+    [SerializeField] float _searchRange = 5.0f;
 
     public override CreatureState State{
-        get{return state_;}
+        get{return _state;}
         set{
-            if(state_ == value) return;
+            if(_state == value) return;
             base.State = value;
 
-            if(coPatrol_ != null){
-                StopCoroutine(coPatrol_);
-                coPatrol_ = null;
+            if(_coPatrol != null){
+                StopCoroutine(_coPatrol);
+                _coPatrol = null;
+            }
+
+            if(_coSearch != null){
+                StopCoroutine(_coSearch);
+                _coSearch = null;
             }
         }
     }
@@ -31,6 +41,7 @@ public class MonsterController : CreatureController
 
         State = CreatureState.Idle;
         Dir = MoveDir.None;
+        _speed = 3.0f;
     }
 
     void Update()
@@ -42,14 +53,33 @@ public class MonsterController : CreatureController
     {
         base.UpdateIdle();
 
-        if(coPatrol_ == null){
-            coPatrol_ = StartCoroutine(CoPatrol());
+        if(_coPatrol == null){
+            _coPatrol = StartCoroutine(CoPatrol());
+        }
+
+        if(_coSearch == null){
+            _coSearch = StartCoroutine(CoSearch());
         }
     }
 
     protected override void MoveToNextPos()
     {
-        Vector3Int moveCellDir = destCellPos_ - CellPos;
+        Vector3Int destPos = _destCellPos;
+        if(_target != null){
+            destPos = _target.GetComponent<CreatureController>().CellPos;
+        }
+
+        List<Vector3Int> path = Managers.Map.FindPath(CellPos, destPos, ignoreDestCollision: true);
+
+        if(path.Count < 2 || (_target != null && path.Count > 10)){
+            _target = null;
+            State = CreatureState.Idle;
+            return;
+        }
+
+        Vector3Int nextPos = path[1];
+
+        Vector3Int moveCellDir = nextPos - CellPos;
         if(moveCellDir.x > 0){
             Dir = MoveDir.Right;
         }
@@ -68,24 +98,8 @@ public class MonsterController : CreatureController
             return;
         }
 
-        Vector3Int destPos = CellPos;
-        switch(Dir){
-            case MoveDir.Up:
-            destPos += Vector3Int.up;
-            break;
-            case MoveDir.Down:
-            destPos += Vector3Int.down;
-            break;
-            case MoveDir.Left:
-            destPos += Vector3Int.left;
-            break;
-            case MoveDir.Right:
-            destPos += Vector3Int.right;
-            break;
-        }
-
-        if(Managers.Map.CanGo(destPos) && Managers.Obj.Find(destPos) == null){
-            CellPos = destPos;
+        if(Managers.Map.CanGo(nextPos) && Managers.Obj.Find(nextPos) == null){
+            CellPos = nextPos;
         }
         else{
             State = CreatureState.Idle;
@@ -112,13 +126,32 @@ public class MonsterController : CreatureController
             Vector3Int randPos = CellPos + new Vector3Int(xRange, yRange, 0);
 
             if(Managers.Map.CanGo(randPos) && Managers.Obj.Find(randPos) == null){
-                destCellPos_ = randPos;
+                _destCellPos = randPos;
                 State = CreatureState.Moving;
                 yield break;
             }
         }
 
         State = CreatureState.Idle;
+    }
+
+    IEnumerator CoSearch(){
+        while(true){
+            yield return new WaitForSeconds(1);
+
+            if(_target != null) continue;
+
+            _target = Managers.Obj.Find((go) => 
+            {
+                PlayerController pc = go.GetComponent<PlayerController>();
+                if(pc == null) return false;
+
+                Vector3Int dir = (pc.CellPos - CellPos);
+                if(dir.magnitude > _searchRange) return false;
+
+                return true;
+            });
+        }
     }
 
 }

@@ -29,7 +29,7 @@ public class ArrowController : CreatureController
         }
 
         State = CreatureState.Moving;
-        speed_ = 15.0f;
+        _speed = 15.0f;
 
         base.Init();
     }

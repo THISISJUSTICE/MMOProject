@@ -6,18 +6,18 @@ using static Define;
 
 public class CreatureController : MonoBehaviour
 {
-    public float speed_ = 5.0f;
+    [SerializeField] public float _speed = 5.0f;
 
     public Vector3Int CellPos {get; set;} = Vector3Int.zero;
-    protected Animator animator_;
-    protected SpriteRenderer sprite_;
+    protected Animator _animator;
+    protected SpriteRenderer _sprite;
 
-    protected CreatureState state_ = CreatureState.Idle;
+    [SerializeField] protected CreatureState _state = CreatureState.Idle;
     public virtual CreatureState State{
-        get{return state_;}
+        get{return _state;}
         set{
-            if(state_ == value) return;
-            state_ = value;
+            if(_state == value) return;
+            _state = value;
             UpdateAnimation();
         }
     }
@@ -58,64 +58,64 @@ public class CreatureController : MonoBehaviour
     }
 
     protected virtual void UpdateAnimation(){
-        if(state_ == CreatureState.Idle){
+        if(_state == CreatureState.Idle){
             switch(lastDir_){
                 case MoveDir.Up:
-                    animator_.Play("Idle_Back");
-                    sprite_.flipX = false;
+                    _animator.Play("Idle_Back");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Down:
-                    animator_.Play("Idle_Front");
-                    sprite_.flipX = false;
+                    _animator.Play("Idle_Front");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Left:
-                    animator_.Play("Idle_Right");
-                    sprite_.flipX = true;
+                    _animator.Play("Idle_Right");
+                    _sprite.flipX = true;
                     break;
                 case MoveDir.Right:
-                    animator_.Play("Idle_Right");
-                    sprite_.flipX = false;
+                    _animator.Play("Idle_Right");
+                    _sprite.flipX = false;
                     break;
             }
         }
-        else if(state_ == CreatureState.Moving){
+        else if(_state == CreatureState.Moving){
             switch(dir_){
                 case MoveDir.Up:
-                    animator_.Play("Walk_Back");
-                    sprite_.flipX = false;
+                    _animator.Play("Walk_Back");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Down:
-                    animator_.Play("Walk_Front");
-                    sprite_.flipX = false;
+                    _animator.Play("Walk_Front");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Left:
-                    animator_.Play("Walk_Right");
-                    sprite_.flipX = true;
+                    _animator.Play("Walk_Right");
+                    _sprite.flipX = true;
                     break;
                 case MoveDir.Right:
-                    animator_.Play("Walk_Right");
-                    sprite_.flipX = false;
+                    _animator.Play("Walk_Right");
+                    _sprite.flipX = false;
                     break;
 
             }
         }
-        else if (state_ == CreatureState.Skill){
+        else if (_state == CreatureState.Skill){
             switch(lastDir_){
                 case MoveDir.Up:
-                    animator_.Play("Attack_Back");
-                    sprite_.flipX = false;
+                    _animator.Play("Attack_Back");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Down:
-                    animator_.Play("Attack_Front");
-                    sprite_.flipX = false;
+                    _animator.Play("Attack_Front");
+                    _sprite.flipX = false;
                     break;
                 case MoveDir.Left:
-                    animator_.Play("Attack_Right");
-                    sprite_.flipX = true;
+                    _animator.Play("Attack_Right");
+                    _sprite.flipX = true;
                     break;
                 case MoveDir.Right:
-                    animator_.Play("Attack_Right");
-                    sprite_.flipX = false;
+                    _animator.Play("Attack_Right");
+                    _sprite.flipX = false;
                     break;
 
             }
@@ -126,8 +126,8 @@ public class CreatureController : MonoBehaviour
     }
 
     protected virtual void Init(){
-        animator_ = GetComponent<Animator>();
-        sprite_ = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
+        _sprite = GetComponent<SpriteRenderer>();
         Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f, 0);
         transform.position = pos;
     }
@@ -161,12 +161,12 @@ public class CreatureController : MonoBehaviour
         
         //도착 여부 확인
         float dist = moveDir.magnitude;
-        if(dist < speed_ * Time.deltaTime){
+        if(dist < _speed * Time.deltaTime){
             transform.position = destPos;
             MoveToNextPos();
         }
         else{
-            transform.position += moveDir.normalized * speed_ * Time.deltaTime;
+            transform.position += moveDir.normalized * _speed * Time.deltaTime;
             State = CreatureState.Moving;
         }
     }

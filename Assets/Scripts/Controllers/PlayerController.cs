@@ -95,7 +95,6 @@ public class PlayerController : CreatureController
         switch(State){
             case CreatureState.Idle:
                 GetDirectionInput();
-                GetIdleInput();
                 break;
             case CreatureState.Moving:
                 GetDirectionInput();
@@ -115,7 +114,14 @@ public class PlayerController : CreatureController
         Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
     }
 
-    void GetIdleInput(){
+    protected override void UpdateIdle(){
+        //이동 상태로 갈    지 확인
+        if(Dir != MoveDir.None){
+            State = CreatureState.Moving;
+            return;
+        }
+
+        //스킬을 사용할 지 확인
         if(Input.GetKey(KeyCode.Space)){
             State = CreatureState.Skill;
             //coSkill_ = StartCoroutine(CoStartPunch());

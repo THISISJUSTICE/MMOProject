@@ -108,17 +108,17 @@ public class MapManager
 		// H = 목적지에서 얼마나 가까운지 (작을 수록 좋음, 고정)
 
 		// (y, x) 이미 방문했는지 여부 (방문 = closed 상태)
-		bool[,] closed = new bool[SizeY, SizeX]; // CloseList
+		bool[,] closed = new bool[SizeY + 1, SizeX + 1]; // CloseList
 
 		// (y, x) 가는 길을 한 번이라도 발견했는지
 		// 발견X => MaxValue
 		// 발견O => F = G + H
-		int[,] open = new int[SizeY, SizeX]; // OpenList
+		int[,] open = new int[SizeY + 1, SizeX + 1]; // OpenList
 		for (int y = 0; y < SizeY; y++)
 			for (int x = 0; x < SizeX; x++)
 				open[y, x] = Int32.MaxValue;
 
-		Pos[,] parent = new Pos[SizeY, SizeX];
+		Pos[,] parent = new Pos[SizeY + 1, SizeX + 1];
 
 		// 오픈리스트에 있는 정보들 중에서, 가장 좋은 후보를 빠르게 뽑아오기 위한 도구
 		PriorityQueue<PQNode> pq = new PriorityQueue<PQNode>();
@@ -132,11 +132,18 @@ public class MapManager
 		    open[pos.Y, pos.X] = 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X));
         }
         catch(Exception e){
-            Debug.Log($"FindPath open[pos.Y, pos.X] Exception: {e.Message}\n\n open.Length: {open.Length}, pos: {pos.X}, {pos.Y}");
+            Debug.Log($"FindPath open[pos.Y, pos.X] Exception: {e.Message}\n\n open.Length: {open.GetLength(0)}, {open.GetLength(1)}, pos: {pos.Y}, {pos.X}");
         }
         
 		pq.Push(new PQNode() { F = 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X)), G = 0, Y = pos.Y, X = pos.X });
-		parent[pos.Y, pos.X] = new Pos(pos.Y, pos.X);
+		
+		try{
+		    parent[pos.Y, pos.X] = new Pos(pos.Y, pos.X);
+        }
+        catch(Exception e){
+            Debug.Log($"FindPath open[pos.Y, pos.X] Exception: {e.Message}\n\n parent.Length: {parent.GetLength(0)}, {parent.GetLength(1)}, pos: {pos.Y}, {pos.X}");
+        }
+		
 
 		while (pq.Count > 0)
 		{

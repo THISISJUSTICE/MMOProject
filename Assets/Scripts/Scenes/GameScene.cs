@@ -21,8 +21,8 @@ public class GameScene : BaseScene
             monster.name = $"Monster{i + 1}";
 
             Vector3Int pos = new Vector3Int(){
-                x = Random.Range(-20, 20),
-                y = Random.Range(-10, 10)
+                x = Random.Range(-15, 15),
+                y = Random.Range(-5, 15)
 
             };
 

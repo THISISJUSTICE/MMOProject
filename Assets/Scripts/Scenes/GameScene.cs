@@ -13,10 +13,6 @@ public class GameScene : BaseScene
         Managers.Map.LoadMap(1);
 
         Screen.SetResolution(640, 480, false);
-        
-        // GameObject player = Managers.Resource.Instantiate("Creatures/Player");
-        // player.name = "Player";
-        // Managers.Obj.Add(player);
 
         // for(int i=0; i<5; i++){
         //     GameObject monster = Managers.Resource.Instantiate("Creatures/Monster");

@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,4 +48,8 @@ class PacketHandler
 		cc.PosInfo = movePacket.PosInfo;
 	}
 
+    internal static void S_SkillHandler(PacketSession session, IMessage message)
+    {
+        throw new NotImplementedException();
+    }
 }

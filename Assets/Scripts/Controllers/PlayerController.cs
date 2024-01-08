@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Google.Protobuf.Protocol;
@@ -94,20 +95,25 @@ public class PlayerController : CreatureController
         }
     }
 
-    protected IEnumerator CoStartPunch(){
-        //피격 판정
-        GameObject go = Managers.Obj.Find(GetFrontPos());
-        if(go != null){
-            CreatureController cc = go.GetComponent<CreatureController>();
-            if(cc != null)
-                cc.OnDamaged();
+    public void UseSkill(int skillID)
+    {
+        if(skillID == 1){
+            _coSkill = StartCoroutine(CoStartPunch());
         }
+    }
 
+    protected virtual void CheckUpdatedFlag(){
+
+    }
+
+    protected IEnumerator CoStartPunch(){
         //대기 시간
         _rangeSkill = false;
+        State = CreatureState.Skill;
         yield return new WaitForSeconds(0.5f);
         State = CreatureState.Idle;
         _coSkill = null;
+        CheckUpdatedFlag();
     }
 
     protected IEnumerator CoStartShootArrow(){

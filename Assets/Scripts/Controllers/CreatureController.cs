@@ -22,7 +22,11 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    [SerializeField]
+    public void SyncPos(){
+        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f, 0);
+        transform.position = destPos;
+    }
+
     public Vector3Int CellPos {
         get{
             return new Vector3Int(PosInfo.PosX, PosInfo.PosY, 0);
@@ -39,7 +43,7 @@ public class CreatureController : MonoBehaviour
     }
     protected Animator _animator;
     protected SpriteRenderer _sprite;
-    [SerializeField]
+
     public virtual CreatureState State{
         get{return PosInfo.State;}
         set{
@@ -51,7 +55,6 @@ public class CreatureController : MonoBehaviour
     }
 
     protected MoveDir _lastDir = MoveDir.Down;
-    [SerializeField]
     public MoveDir Dir{
         get{ return PosInfo.MoveDir; }
         set{
@@ -190,7 +193,6 @@ public class CreatureController : MonoBehaviour
 
         State = CreatureState.Idle;
         Dir = MoveDir.None;
-        CellPos = new Vector3Int(0,0,0);
         UpdateAnimation();
     }
 

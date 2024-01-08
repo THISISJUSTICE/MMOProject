@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Google.Protobuf.Protocol;
 using UnityEngine;
-using static Define;
 
 public class MonsterController : CreatureController
 {
@@ -17,9 +17,9 @@ public class MonsterController : CreatureController
     [SerializeField] bool _rangedSkill = false;
 
     public override CreatureState State{
-        get{return _state;}
+        get{return PosInfo.State;}
         set{
-            if(_state == value) return;
+            if(PosInfo.State == value) return;
             base.State = value;
 
             if(_coPatrol != null){
@@ -179,7 +179,7 @@ public class MonsterController : CreatureController
         GameObject go = Managers.Resource.Instantiate("Creatures/Arrow");
         ArrowController ac = go.GetComponent<ArrowController>();
 
-        ac.Dir = lastDir_;
+        ac.Dir = _lastDir;
         ac.CellPos = CellPos;
 
         yield return new WaitForSeconds(0.3f);

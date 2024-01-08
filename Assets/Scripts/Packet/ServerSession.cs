@@ -2,13 +2,26 @@
 using Google.Protobuf.Protocol;
 using ServerCore;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 
 public class ServerSession : PacketSession
 {
+	public void Send(IMessage packet)
+	{
+		ushort size = (ushort)packet.CalculateSize();
+		byte[] sendBuffer = new byte[size + 4];
+		Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
+
+		string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+		MsgId msgID = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+		Array.Copy(BitConverter.GetBytes((ushort)msgID), 0, sendBuffer, 2, sizeof(ushort));
+
+		Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+
+		Send(new ArraySegment<byte>(sendBuffer));
+	}
+	
 	public override void OnConnected(EndPoint endPoint)
 	{
 		Debug.Log($"OnConnected : {endPoint}");

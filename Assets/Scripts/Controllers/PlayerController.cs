@@ -1,16 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Google.Protobuf.Protocol;
 using UnityEngine;
-using static Define;
 
 public class PlayerController : CreatureController
 {
     protected Coroutine _coSkill;
     protected bool _rangeSkill = false;
-
-    private void Start() {
-        Init();
-    }
 
     protected override void Init()
     {
@@ -19,7 +15,7 @@ public class PlayerController : CreatureController
 
     protected override void UpdateAnimation(){
         if(State == CreatureState.Idle){
-            switch(lastDir_){
+            switch(_lastDir){
                 case MoveDir.Up:
                     _animator.Play("Idle_Back");
                     _sprite.flipX = false;
@@ -60,7 +56,7 @@ public class PlayerController : CreatureController
             }
         }
         else if (State == CreatureState.Skill){
-            switch(lastDir_){
+            switch(_lastDir){
                 case MoveDir.Up:
                     _animator.Play(_rangeSkill ? "Attack_Weapon_Back" : "Attack_Back");
                     _sprite.flipX = false;
@@ -85,14 +81,17 @@ public class PlayerController : CreatureController
         }
     }
 
-    void Update()
-    {
-        UpdateController();       
-    }
-
     protected override void UpdateController()
     {
         base.UpdateController();
+    }
+
+    protected override void UpdateIdle(){
+        //이동 상태로 갈 지 확인
+        if(Dir != MoveDir.None){
+            State = CreatureState.Moving;
+            return;
+        }
     }
 
     protected IEnumerator CoStartPunch(){
@@ -115,7 +114,7 @@ public class PlayerController : CreatureController
         GameObject go = Managers.Resource.Instantiate("Creatures/Arrow");
         ArrowController ac = go.GetComponent<ArrowController>();
 
-        ac.Dir = lastDir_;
+        ac.Dir = _lastDir;
         ac.CellPos = CellPos;
 
         //대기 시간

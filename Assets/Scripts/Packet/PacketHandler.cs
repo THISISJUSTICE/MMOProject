@@ -37,9 +37,14 @@ class PacketHandler
 	}
 
 	public static void S_MoveHandler(PacketSession session, IMessage packet){
-		S_Move moveGamePacket = packet as S_Move;
+		S_Move movePacket = packet as S_Move;
+		GameObject go = Managers.Obj.FindByID(movePacket.PlayerID);
+		if(go == null) return;
 
-		Debug.Log($"S_MoveHandler");
+		CreatureController cc = go.GetComponent<CreatureController>();
+		if(cc == null) return;
+		
+		cc.PosInfo = movePacket.PosInfo;
 	}
 
 }

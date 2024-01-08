@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Google.Protobuf.Protocol;
 using UnityEngine;
-using static Define;
+
 
 
 public class ArrowController : CreatureController
@@ -11,7 +12,7 @@ public class ArrowController : CreatureController
     }
     protected override void Init()
     {
-        switch(lastDir_){
+        switch(_lastDir){
             case MoveDir.Up:
                 transform.rotation = Quaternion.Euler(0,0,0);
                 break;

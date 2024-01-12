@@ -16,13 +16,18 @@ public class MapEditor
     //%(Ctrl), #(Shift), &(Alt)
     [MenuItem("Tools/GenerateMap %#&g")]
     private static void GenerateMap(){
+        GenerateByPath("Assets/Resources/Map");
+        GenerateByPath("../C-_Server/Common/MapData");
+    }
+
+    private static void GenerateByPath(string pathPrefix){
         GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Maps");
         
         foreach (GameObject go in gameObjects){
             Tilemap tmBase = Util.FindChild<Tilemap>(go, "Tilemap_Base", true);
             Tilemap tm = Util.FindChild<Tilemap>(go, "Tilemap_Collision", true);
 
-            using (var writer = File.CreateText($"Assets/Resources/Map/{go.name}.txt")){
+            using (var writer = File.CreateText($"{pathPrefix}/{go.name}.txt")){
                 writer.WriteLine(tmBase.cellBounds.xMin);
                 writer.WriteLine(tmBase.cellBounds.xMax);
                 writer.WriteLine(tmBase.cellBounds.yMin);
@@ -42,10 +47,6 @@ public class MapEditor
                 }
             }
         }
-
-        
-        
-        
     }
 
 #endif

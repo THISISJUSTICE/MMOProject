@@ -1,12 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using Google.Protobuf.Protocol;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class MyPlayerController : PlayerController
 {
+    bool _moveKeyPressed = false;
     protected override void Init()
     {
         base.Init();
@@ -27,7 +25,11 @@ public class MyPlayerController : PlayerController
     }
 
     protected override void UpdateIdle(){
-        base.UpdateIdle();
+        //이동 상태로 갈 지 확인
+        if(_moveKeyPressed){
+            State = CreatureState.Moving;
+            return;
+        }
 
         //스킬을 사용할 지 확인
         if(_coSkillCooltime == null && Input.GetKey(KeyCode.Space)){
@@ -52,6 +54,8 @@ public class MyPlayerController : PlayerController
 
     //입력을 받아 방향 설정
     void GetDirectionInput(){        
+        _moveKeyPressed = true;
+
         if(Input.GetKey(KeyCode.W)){
             Dir = MoveDir.Up;
         }
@@ -65,12 +69,12 @@ public class MyPlayerController : PlayerController
             Dir = MoveDir.Right;
         }
         else{
-            Dir = MoveDir.None;
+            _moveKeyPressed = false;
         }
     }
 
     protected override void MoveToNextPos(){
-        if(Dir == MoveDir.None){
+        if(!_moveKeyPressed){
             State = CreatureState.Idle;
             CheckUpdatedFlag();
             return;

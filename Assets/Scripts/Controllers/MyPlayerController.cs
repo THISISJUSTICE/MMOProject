@@ -36,7 +36,7 @@ public class MyPlayerController : PlayerController
             Debug.Log("Skill");
 
             C_Skill skill = new C_Skill() {Info = new SkillInfo()};
-            skill.Info.SkillID = 1;
+            skill.Info.SkillID = 2;
             Managers.Network.Send(skill);
             _coSkillCooltime = StartCoroutine(CoInputCooltime(0.2f));
         }

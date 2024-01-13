@@ -25,6 +25,7 @@ public class ObjectManager
                 MyPlayer = go.GetComponent<MyPlayerController>();
                 MyPlayer.id = info.ObjectID;
                 MyPlayer.PosInfo = info.PosInfo;
+                MyPlayer.Stat = info.StatInfo;
                 MyPlayer.SyncPos();
             }
             else{
@@ -37,6 +38,7 @@ public class ObjectManager
                 PlayerController pc = go.GetComponent<PlayerController>();
                 pc.id = info.ObjectID;
                 pc.PosInfo = info.PosInfo;
+                pc.Stat = info.StatInfo;
                 pc.SyncPos();
             }
         }
@@ -51,8 +53,8 @@ public class ObjectManager
             _objects.Add(info.ObjectID, go);
 
             ArrowController ac = go.GetComponent<ArrowController>();
-            ac.Dir = info.PosInfo.MoveDir;
-            ac.CellPos = new Vector3Int(info.PosInfo.PosX, info.PosInfo.PosY, 0);
+            ac.PosInfo = info.PosInfo;
+            ac.Stat = info.StatInfo;
             ac.SyncPos();
         }
         

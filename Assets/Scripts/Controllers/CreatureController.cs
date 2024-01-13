@@ -4,7 +4,21 @@ using UnityEngine;
 public class CreatureController : MonoBehaviour
 {
     public int id {get; set;}
-    [SerializeField] public float _speed = 5.0f;
+    StatInfo _stat = new StatInfo();
+    public StatInfo Stat {
+        get {return _stat;} 
+        set {
+            if(_stat.Equals(value)) return;
+            _stat.Hp = value.Hp;
+            _stat.MaxHP = value.MaxHP;
+            _stat.Speed = value.Speed;
+        }
+    }
+
+    public float Speed{
+        get{return Stat.Speed;}
+        set{Stat.Speed = value;}
+    }
 
     protected bool _updated = false;
     protected PositionInfo _posInfo = new PositionInfo();
@@ -216,12 +230,12 @@ public class CreatureController : MonoBehaviour
         
         //도착 여부 확인
         float dist = moveDir.magnitude;
-        if(dist < _speed * Time.deltaTime){
+        if(dist < Speed * Time.deltaTime){
             transform.position = destPos;
             MoveToNextPos();
         }
         else{
-            transform.position += moveDir.normalized * _speed * Time.deltaTime;
+            transform.position += moveDir.normalized * Speed * Time.deltaTime;
             State = CreatureState.Moving;
         }
     }

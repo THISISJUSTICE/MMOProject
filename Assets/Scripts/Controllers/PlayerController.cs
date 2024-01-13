@@ -91,6 +91,10 @@ public class PlayerController : CreatureController
         if(skillID == 1){
             _coSkill = StartCoroutine(CoStartPunch());
         }
+
+        else if(skillID == 2){
+            _coSkill = StartCoroutine(CoStartShootArrow());
+        }
     }
 
     protected virtual void CheckUpdatedFlag(){
@@ -108,17 +112,13 @@ public class PlayerController : CreatureController
     }
 
     protected IEnumerator CoStartShootArrow(){
-        GameObject go = Managers.Resource.Instantiate("Creatures/Arrow");
-        ArrowController ac = go.GetComponent<ArrowController>();
-
-        ac.Dir = Dir;
-        ac.CellPos = CellPos;
-
         //대기 시간
         _rangeSkill = true;
+        State = CreatureState.Skill;
         yield return new WaitForSeconds(0.3f);
         State = CreatureState.Idle;
         _coSkill = null;
+        CheckUpdatedFlag();
     }
 
     public override void OnDamaged(){

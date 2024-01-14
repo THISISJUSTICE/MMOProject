@@ -1,8 +1,10 @@
 using Google.Protobuf.Protocol;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 public class CreatureController : MonoBehaviour
 {
+    HpBar _hpBar;
     public int id {get; set;}
     StatInfo _stat = new StatInfo();
     public StatInfo Stat {
@@ -12,12 +14,22 @@ public class CreatureController : MonoBehaviour
             _stat.Hp = value.Hp;
             _stat.MaxHP = value.MaxHP;
             _stat.Speed = value.Speed;
+            UpdateHpBar();
         }
     }
 
     public float Speed{
         get{return Stat.Speed;}
         set{Stat.Speed = value;}
+    }
+
+    public int Hp{
+        get{return Stat.Hp;}
+        set
+        {
+            Stat.Hp = value;
+            UpdateHpBar();
+        }
     }
 
     protected bool _updated = false;
@@ -33,6 +45,24 @@ public class CreatureController : MonoBehaviour
             State = value.State;
             Dir = value.MoveDir;
         }
+    }
+
+    protected void AddHpBar(){
+        GameObject go = Managers.Resource.Instantiate("UI/HpBar", transform);
+        go.transform.localPosition = new Vector3(0, 0.5f, 0);
+        go.name = "HpBar";
+        _hpBar = go.GetComponent<HpBar>();
+        UpdateHpBar();
+    }
+
+    void UpdateHpBar(){
+        if(_hpBar == null) return;
+
+        float ratio = 0.0f;
+        if(Stat.MaxHP > 0){
+            ratio = (float)Hp / (float)Stat.MaxHP;
+        }
+        _hpBar.SetHpBar(ratio);
     }
 
     public void SyncPos(){

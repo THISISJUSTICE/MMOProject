@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 
-public class ArrowController : CreatureController
+public class ArrowController : BaseController
 {
     private void Start() {
         Init();

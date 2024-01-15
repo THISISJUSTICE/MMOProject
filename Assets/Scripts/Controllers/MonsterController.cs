@@ -41,7 +41,6 @@ public class MonsterController : CreatureController
     protected override void Init()
     {
         base.Init();
-        AddHpBar();
 
         State = CreatureState.Idle;
         Dir = MoveDir.Down;
@@ -105,7 +104,7 @@ public class MonsterController : CreatureController
         
         Dir = GetDirFromVec(moveCellDir);
 
-        if(Managers.Map.CanGo(nextPos) && Managers.Obj.Find(nextPos) == null){
+        if(Managers.Map.CanGo(nextPos) && Managers.Obj.FindCreature(nextPos) == null){
             CellPos = nextPos;
         }
         else{
@@ -114,11 +113,6 @@ public class MonsterController : CreatureController
     }
 
     public override void OnDamaged(){
-        GameObject effect = Managers.Resource.Instantiate("Effects/DieEffect");
-        effect.transform.position = transform.position;
-        effect.GetComponent<Animator>().Play("Play");
-        GameObject.Destroy(effect, 0.5f);
-
         Managers.Obj.Remove(id);
         Managers.Resource.Destroy(gameObject); 
     }
@@ -132,7 +126,7 @@ public class MonsterController : CreatureController
             int yRange = Random.Range(-5, 6);
             Vector3Int randPos = CellPos + new Vector3Int(xRange, yRange, 0);
 
-            if(Managers.Map.CanGo(randPos) && Managers.Obj.Find(randPos) == null){
+            if(Managers.Map.CanGo(randPos) && Managers.Obj.FindCreature(randPos) == null){
                 _destCellPos = randPos;
                 State = CreatureState.Moving;
                 yield break;
@@ -163,7 +157,7 @@ public class MonsterController : CreatureController
 
     IEnumerator CoStartPunch(){
         //피격 판정
-        GameObject go = Managers.Obj.Find(GetFrontPos());
+        GameObject go = Managers.Obj.FindCreature(GetFrontPos());
         if(go != null){
             CreatureController cc = go.GetComponent<CreatureController>();
             if(cc != null)

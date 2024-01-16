@@ -29,11 +29,9 @@ public class ObjectManager
                 MyPlayer.SyncPos();
             }
             else{
-                if(info.ObjectID == MyPlayer.id) return;
                 GameObject go = Managers.Resource.Instantiate("Creatures/Player");
                 go.name = info.Name;
-                if(!_objects.ContainsKey(info.ObjectID))
-                    _objects.Add(info.ObjectID, go);
+                _objects.Add(info.ObjectID, go);
 
                 PlayerController pc = go.GetComponent<PlayerController>();
                 pc.id = info.ObjectID;
@@ -44,7 +42,15 @@ public class ObjectManager
         }
 
         else if(objectType == GameObjectType.Monster){
-            
+            GameObject go = Managers.Resource.Instantiate("Creatures/Monster");
+            go.name = info.Name;
+            _objects.Add(info.ObjectID, go);
+
+            MonsterController mc = go.GetComponent<MonsterController>();
+            mc.id = info.ObjectID;
+            mc.PosInfo = info.PosInfo;
+            mc.Stat = info.StatInfo;
+            mc.SyncPos();
         }
 
         else if(objectType == GameObjectType.Projectile){

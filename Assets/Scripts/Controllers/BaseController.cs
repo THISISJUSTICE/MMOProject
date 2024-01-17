@@ -123,6 +123,7 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void UpdateAnimation(){
+        if(_animator == null || _sprite == null) return;
         if(State == CreatureState.Idle){
             switch(Dir){
                 case MoveDir.Up:
@@ -205,9 +206,7 @@ public class BaseController : MonoBehaviour
         _sprite = GetComponent<SpriteRenderer>();
         Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f, 0);
         transform.position = pos;
-
-        State = CreatureState.Idle;
-        Dir = MoveDir.Down;
+        
         UpdateAnimation();
     }
 

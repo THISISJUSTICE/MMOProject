@@ -52,10 +52,10 @@ class PacketHandler
 		GameObject go = Managers.Obj.FindByID(skillPacket.ObjectID);
 		if(go == null) return;
 
-		PlayerController pc = go.GetComponent<PlayerController>();
-		if(pc == null) return;
+		CreatureController cc = go.GetComponent<CreatureController>();
+		if(cc == null) return;
 		
-		pc.UseSkill(skillPacket.Info.SkillID);
+		cc.UseSkill(skillPacket.Info.SkillID);
     }
 
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)

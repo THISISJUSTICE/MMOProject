@@ -6,7 +6,6 @@ using UnityEngine;
 public class MonsterController : CreatureController
 {
     Coroutine _coSkill;
-    [SerializeField] bool _rangedSkill = false;
 
     private void Start() {
         Init();
@@ -15,10 +14,6 @@ public class MonsterController : CreatureController
     protected override void Init()
     {
         base.Init();
-
-        State = CreatureState.Idle;
-        Dir = MoveDir.Down;
-        _rangedSkill = Random.Range(0, 2) == 0 ? true : false;
     }
 
     void Update()
@@ -36,30 +31,11 @@ public class MonsterController : CreatureController
         // Managers.Resource.Destroy(gameObject); 
     }
 
-    IEnumerator CoStartPunch(){
-        //피격 판정
-        GameObject go = Managers.Obj.FindCreature(GetFrontPos());
-        if(go != null){
-            CreatureController cc = go.GetComponent<CreatureController>();
-            if(cc != null)
-                cc.OnDamaged();
+    public override void UseSkill(int skillID)
+    {
+        if(skillID == 1){
+            State = CreatureState.Skill;
         }
-
-        yield return new WaitForSeconds(0.5f);
-        State = CreatureState.Idle;
-        _coSkill = null;
-    }
-
-    IEnumerator CoStartShootArrow(){
-        GameObject go = Managers.Resource.Instantiate("Creatures/Arrow");
-        ArrowController ac = go.GetComponent<ArrowController>();
-
-        ac.Dir = Dir;
-        ac.CellPos = CellPos;
-
-        yield return new WaitForSeconds(0.3f);
-        State = CreatureState.Moving;
-        _coSkill = null;
     }
 
 }

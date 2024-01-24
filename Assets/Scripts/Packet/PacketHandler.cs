@@ -40,6 +40,8 @@ class PacketHandler
 		GameObject go = Managers.Obj.FindByID(movePacket.ObjectID);
 		if(go == null) return;
 
+		if(Managers.Obj.MyPlayer.id == movePacket.ObjectID) return;
+
 		BaseController bc = go.GetComponent<BaseController>();
 		if(bc == null) return;
 
